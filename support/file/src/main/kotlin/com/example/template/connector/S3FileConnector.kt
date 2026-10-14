@@ -108,15 +108,15 @@ class S3FileConnector(
         return "$endpoint/$bucket/$key"
     }
 
-    override fun downloadURL(path: Path, expirationSeconds: Long): DownloadUrl =
-        presignedURL(path = path, expirationSeconds = expirationSeconds, isAttachment = false)
+    override fun downloadURL(path: Path, expiration: Duration): DownloadUrl =
+        presignedURL(path = path, expiration = expiration, isAttachment = false)
 
-    override fun attachmentURL(path: Path, expirationSeconds: Long): DownloadUrl =
-        presignedURL(path = path, expirationSeconds = expirationSeconds, isAttachment = true)
+    override fun attachmentURL(path: Path, expiration: Duration): DownloadUrl =
+        presignedURL(path = path, expiration = expiration, isAttachment = true)
 
-    private fun presignedURL(path: Path, expirationSeconds: Long, isAttachment: Boolean): DownloadUrl {
+    private fun presignedURL(path: Path, expiration: Duration, isAttachment: Boolean): DownloadUrl {
         val key = keyOf(path)
-        log.info("Generate presigned URL - bucket: $bucket, key: $key, expiration: $expirationSeconds seconds")
+        log.info("Generate presigned URL - bucket: {}, key: {}, expiration: {}", bucket, key, expiration)
 
         val getObjectRequestBuilder = GetObjectRequest.builder()
             .bucket(bucket)
@@ -129,12 +129,12 @@ class S3FileConnector(
         }
 
         val presignRequest = GetObjectPresignRequest.builder()
-            .signatureDuration(Duration.ofSeconds(expirationSeconds))
+            .signatureDuration(expiration)
             .getObjectRequest(getObjectRequestBuilder.build())
             .build()
 
         val url = s3Presigner.presignGetObject(presignRequest).url().toString()
-        return DownloadUrl(url = url, expiresIn = expirationSeconds)
+        return DownloadUrl(url = url, expiresIn = expiration.toMillis())
     }
 
     override fun resource(path: Path): Resource {

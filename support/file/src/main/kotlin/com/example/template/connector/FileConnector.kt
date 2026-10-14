@@ -4,6 +4,7 @@ import com.example.template.model.DownloadUrl
 import org.springframework.core.io.Resource
 import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Path
+import java.time.Duration
 
 interface FileConnector {
     fun createDirectories(dir: String)
@@ -15,6 +16,6 @@ interface FileConnector {
 
     fun url(path: Path): String
     fun resource(path: Path): Resource
-    fun downloadURL(path: Path, expirationSeconds: Long = 300): DownloadUrl
-    fun attachmentURL(path: Path, expirationSeconds: Long = 300): DownloadUrl
+    fun downloadURL(path: Path, expiration: Duration = Duration.ofMinutes(5)): DownloadUrl
+    fun attachmentURL(path: Path, expiration: Duration = Duration.ofMinutes(5)): DownloadUrl
 }
