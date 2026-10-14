@@ -3,19 +3,22 @@ package com.example.template.firebase
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.io.FileInputStream
+import org.springframework.core.io.ResourceLoader
 
 
 @Configuration
-@ConditionalOnProperty(name = ["support.notification.enabled"], havingValue = "true")
-class FirebaseConfig{
+class FirebaseConfig(
+    private val resourceLoader: ResourceLoader,
+    @Value("\${firebase.service-account.location:classpath:$DEFAULT_LOCATION}")
+    private val serviceAccountLocation: String,
+){
 
     @Bean
     fun initializeFirebase(): FirebaseApp? {
-        val serviceAccount = FileInputStream(FILE_LOCATION)
+        val serviceAccount = resourceLoader.getResource(serviceAccountLocation).inputStream
         val options = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(serviceAccount))
             .build()
@@ -23,6 +26,6 @@ class FirebaseConfig{
     }
 
     companion object{
-        private const val FILE_LOCATION = "support/notification/src/main/resources/firebase-service-account.json"
+        private const val DEFAULT_LOCATION = "firebase-service-account.json"
     }
 }

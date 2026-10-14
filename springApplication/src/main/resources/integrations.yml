@@ -1,6 +1,4 @@
 support:
-  notification:
-    enabled: ${NOTIFICATION_ENABLED:false}
   mail:
     enabled: ${MAIL_ENABLED:false}
   sms:
