@@ -3,7 +3,6 @@ package com.example.template.connector
 import com.example.template.model.DownloadUrl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.io.Resource
 import org.springframework.core.io.InputStreamResource
 import org.springframework.stereotype.Service
@@ -24,7 +23,6 @@ import java.net.URI
 import java.time.Duration
 
 @Service
-@ConditionalOnProperty(name = ["file.storage.type"], havingValue = "s3")
 class S3FileConnector(
     @Value("\${file.storage.endpoint}") private val endpoint: String,
     @Value("\${file.storage.bucket}") private val bucket: String,

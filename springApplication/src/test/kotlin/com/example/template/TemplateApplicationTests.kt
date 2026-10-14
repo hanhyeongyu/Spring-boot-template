@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest
     "support.notification.enabled=false",
     "support.mail.enabled=false",
     "support.sms.enabled=false",
-    "file.storage.type=local",
     "spring.profiles.active=local",
     "support.database.jdbc-url=jdbc:h2:mem:template-context-test;DB_CLOSE_DELAY=-1",
     "support.database.username=sa",

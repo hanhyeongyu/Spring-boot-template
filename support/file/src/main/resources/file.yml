@@ -2,18 +2,6 @@ spring.servlet.multipart.max-file-size: 300MB
 spring.servlet.multipart.max-request-size: 300MB
 spring.servlet.multipart.enabled: true
 
-file.baseUrl: http://localhost:8080/
-
-file:images: images
-
-file.pdfs: pdfs
-
-file.videos: videos
-
-file.videos.hsl: video_hsl
-
-
-file.storage.type: ${FILE_STORAGE_TYPE:local}
 file.storage.endpoint: ${S3_ENDPOINT:}
 file.storage.bucket: ${S3_BUCKET:}
 file.storage.region: ${S3_REGION:}
