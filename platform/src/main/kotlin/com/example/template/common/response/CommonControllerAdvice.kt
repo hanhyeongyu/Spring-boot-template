@@ -25,8 +25,9 @@ internal class CommonControllerAdvice {
     @ExceptionHandler(BaseException::class)
     fun business(exception: BaseException): ResponseEntity<ApiResponse<Unit>> {
         val code = exception.errorCode ?: ErrorCode.COMMON_SYSTEM_ERROR
-        if (code.httpStatus.is5xxServerError) log.error("Application failure", exception)
-        return response(code, if (code.httpStatus.is5xxServerError) code.errorMessage else exception.message ?: code.errorMessage)
+        val isServerError = code.httpStatus >= 500
+        if (isServerError) log.error("Application failure", exception)
+        return response(code, if (isServerError) code.errorMessage else exception.message ?: code.errorMessage)
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class, MissingServletRequestParameterException::class,
@@ -56,5 +57,5 @@ internal class CommonControllerAdvice {
     }
 
     private fun response(code: ErrorCode, message: String = code.errorMessage): ResponseEntity<ApiResponse<Unit>> =
-        ResponseEntity.status(code.httpStatus).body(ApiResponse.error(code.httpStatus.value(), code.errorCode, message))
+        ResponseEntity.status(code.httpStatus).body(ApiResponse.error(code, message))
 }

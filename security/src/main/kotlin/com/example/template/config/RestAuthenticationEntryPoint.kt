@@ -68,7 +68,7 @@ class RestAuthenticationEntryPoint(
         response.characterEncoding = "UTF-8"
 
 
-        val responseException = ApiResponse.error(status.value(), INVALID_ACCESS_TOKEN.errorCode, INVALID_ACCESS_TOKEN.errorMessage)
+        val responseException = ApiResponse.error(INVALID_ACCESS_TOKEN)
         val responseBody = objectMapper.writeValueAsString(responseException)
         response.writer?.write(responseBody)
 

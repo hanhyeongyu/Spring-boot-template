@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.stereotype.Component
@@ -27,11 +26,11 @@ class RestAccessDeniedHandler(
         log.error("AccessDenied", accessDeniedException)
         log.error("Request Uri : {}", request?.requestURI)
 
-        val responseException = ApiResponse.error(403, ACCESS_DENIED.errorCode, ACCESS_DENIED.errorMessage)
+        val responseException = ApiResponse.error(ACCESS_DENIED)
         val responseBody = objectMapper.writeValueAsString(responseException)
 
         response?.contentType = MediaType.APPLICATION_JSON_VALUE
-        response?.status = HttpStatus.FORBIDDEN.value()
+        response?.status = ACCESS_DENIED.httpStatus
         response?.characterEncoding = "UTF-8"
         response?.writer?.write(responseBody)
     }
