@@ -31,9 +31,14 @@ internal class CommonControllerAdvice {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class, MissingServletRequestParameterException::class,
-        MissingServletRequestPartException::class, MethodArgumentTypeMismatchException::class,
-        MethodArgumentNotValidException::class)
+        MissingServletRequestPartException::class, MethodArgumentTypeMismatchException::class)
     fun invalidRequest() = response(ErrorCode.COMMON_INVALID_PARAMETER)
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun invalidField(exception: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Unit>> {
+        val fieldError = exception.bindingResult.fieldError ?: return response(ErrorCode.COMMON_INVALID_PARAMETER)
+        return response(ErrorCode.COMMON_INVALID_PARAMETER, "${fieldError.field}: ${fieldError.defaultMessage}")
+    }
 
     @ExceptionHandler(NoHandlerFoundException::class, NoResourceFoundException::class)
     fun notFound() = response(ErrorCode.COMMON_ENTITY_NOT_FOUND)
