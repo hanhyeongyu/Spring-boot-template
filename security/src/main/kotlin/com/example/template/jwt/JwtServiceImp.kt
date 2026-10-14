@@ -3,8 +3,7 @@ package com.example.template.jwt
 import com.example.template.common.exception.BaseException
 import com.example.template.common.exception.ErrorCode.INVALID_REFRESH_TOKEN
 import org.slf4j.LoggerFactory
-import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.oauth2.jwt.JwtValidationException
+import org.springframework.security.oauth2.jwt.JwtException
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 internal class JwtServiceImp(
     private val jwtComposer: JwtComposer,
-    private val jwtDecoder: JwtDecoder,
+    private val jwtDecoder: JwtTokenDecoder,
     private val tokenRepository: JwtRepository,
 ): JwtService {
 
@@ -27,7 +26,7 @@ internal class JwtServiceImp(
 
     override fun issueToken(refreshToken: String): IssueToken {
         try{
-            val jwt = jwtDecoder.decode(refreshToken)
+            val jwt = jwtDecoder.decodeRefresh(refreshToken)
             val id = jwt.subject
 
             if (validateToken(id, refreshToken)){
@@ -35,7 +34,7 @@ internal class JwtServiceImp(
             }else{
                 throw BaseException(INVALID_REFRESH_TOKEN)
             }
-        }catch (e: JwtValidationException){
+        }catch (e: JwtException){
             log.error("Issue token ", e)
             throw BaseException(INVALID_REFRESH_TOKEN)
         }
