@@ -1,7 +1,6 @@
 dependencies{
-    implementation("software.amazon.awssdk:s3:2.20.100")
-    implementation("software.amazon.awssdk:auth:2.20.100")
-    implementation("software.amazon.awssdk:aws-core:2.20.100")
+    implementation(platform("software.amazon.awssdk:bom:2.20.100"))
+    implementation("software.amazon.awssdk:s3")
     implementation(project(":platform"))
 
     compileOnly("org.springframework:spring-web")

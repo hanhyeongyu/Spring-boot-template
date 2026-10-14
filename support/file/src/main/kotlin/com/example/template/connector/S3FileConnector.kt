@@ -32,20 +32,22 @@ class S3FileConnector(
 ) : FileConnector {
     private val log = LoggerFactory.getLogger(javaClass)
 
+    private val credentialsProvider by lazy {
+        StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey))
+    }
+
     private val s3Client: S3Client by lazy {
-        val credentials = AwsBasicCredentials.create(accessKey, secretKey)
         S3Client.builder()
             .endpointOverride(URI.create(endpoint))
-            .credentialsProvider(StaticCredentialsProvider.create(credentials))
+            .credentialsProvider(credentialsProvider)
             .region(Region.of(region))
             .build()
     }
 
     private val s3Presigner: S3Presigner by lazy {
-        val credentials = AwsBasicCredentials.create(accessKey, secretKey)
         S3Presigner.builder()
             .endpointOverride(URI.create(endpoint))
-            .credentialsProvider(StaticCredentialsProvider.create(credentials))
+            .credentialsProvider(credentialsProvider)
             .region(Region.of(region))
             .build()
     }
