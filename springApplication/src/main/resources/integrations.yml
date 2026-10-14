@@ -1,0 +1,23 @@
+support:
+  notification:
+    enabled: ${NOTIFICATION_ENABLED:false}
+  mail:
+    enabled: ${MAIL_ENABLED:false}
+  sms:
+    enabled: ${SMS_ENABLED:false}
+naver:
+  sens:
+    sms:
+      access-key: ${SENS_ACCESS_KEY:}
+      secret-key: ${SENS_SECRET_KEY:}
+      service-id: ${SENS_SERVICE_ID:}
+      from: ${SENS_FROM:}
+spring:
+  mail:
+    host: ${SMTP_HOST:}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true

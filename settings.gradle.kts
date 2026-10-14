@@ -14,6 +14,8 @@ include(
     "support:storage",
     "support:file",
     "support:notification",
+    "support:mail",
+    "support:sms",
 
     "user"
 )

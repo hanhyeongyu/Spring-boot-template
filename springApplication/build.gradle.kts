@@ -19,6 +19,8 @@ dependencies{
     implementation(project(":support:log"))
     implementation(project(":support:storage"))
     implementation(project(":support:file"))
+    implementation(project(":support:mail"))
+    implementation(project(":support:sms"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
 }
