@@ -10,6 +10,7 @@ enum class ErrorCode(val errorCode: Int, val errorMessage: String, val httpStatu
     COMMON_UNSUPPORTED_MEDIA_TYPE(4150, "Unsupported media type.", 415),
     COMMON_SERVICE_UNAVAILABLE(5030, "Service unavailable.", 503),
     TOKEN_NOT_FOUND(4010, "Token is required.", 401),
+    EXPIRED_ACCESS_TOKEN(4011, "Access token expired.", 401),
     INVALID_ACCESS_TOKEN(4013, "Invalid access token.", 401),
     INVALID_REFRESH_TOKEN(4014, "Invalid refresh token.", 401),
     INVALID_PASSWORD(4015, "Invalid credentials.", 401),

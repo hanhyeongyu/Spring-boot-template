@@ -1,13 +1,15 @@
 package com.example.template.config
 
+import com.example.template.common.exception.ErrorCode.EXPIRED_ACCESS_TOKEN
 import com.example.template.common.exception.ErrorCode.INVALID_ACCESS_TOKEN
+import com.example.template.common.exception.ErrorCode.TOKEN_NOT_FOUND
 import com.example.template.common.response.ApiResponse
+import com.example.template.jwt.JwtExpiredException
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException
@@ -39,7 +41,6 @@ class RestAuthenticationEntryPoint(
         authException: AuthenticationException?
     ) {
 
-        var status = HttpStatus.UNAUTHORIZED
         val parameters: MutableMap<String, String?> = LinkedHashMap()
         if (this.realmName != null) {
             parameters["realm"] = this.realmName
@@ -57,18 +58,21 @@ class RestAuthenticationEntryPoint(
                 if (StringUtils.hasText(error.scope)) {
                     parameters["scope"] = error.scope
                 }
-                status = error.httpStatus
             }
         }
 
         val wwwAuthenticate = computeWWWAuthenticateHeaderValue(parameters)
         response.addHeader(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate)
-        response.status = status.value()
+        val errorCode = when {
+            authException?.cause is JwtExpiredException -> EXPIRED_ACCESS_TOKEN
+            authException is OAuth2AuthenticationException -> INVALID_ACCESS_TOKEN
+            else -> TOKEN_NOT_FOUND
+        }
+        response.status = errorCode.httpStatus
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.characterEncoding = "UTF-8"
 
-
-        val responseException = ApiResponse.error(INVALID_ACCESS_TOKEN)
+        val responseException = ApiResponse.error(errorCode)
         val responseBody = objectMapper.writeValueAsString(responseException)
         response.writer?.write(responseBody)
 
