@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.oauth2.jwt.JwtException
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
+import java.security.Principal
 
 
 @Service
@@ -44,6 +45,12 @@ internal class JwtServiceImp(
     override fun authentication(token: String): AuthenticationToken {
         val jwtAuthenticationToken = JwtAuthenticationToken(jwtDecoder.decode(token))
         return AuthenticationToken(jwtAuthenticationToken)
+    }
+
+    override fun accessTokenInfo(principal: Principal): AccessTokenInfo {
+        val jwt = (principal as JwtAuthenticationToken).token
+        val remaining = requireNotNull(jwt.expiresAt).toEpochMilli() - System.currentTimeMillis()
+        return AccessTokenInfo(id = jwt.subject, expiresIn = remaining.coerceAtLeast(0))
     }
 
     private fun validateToken(id: String, refreshToken: String): Boolean{

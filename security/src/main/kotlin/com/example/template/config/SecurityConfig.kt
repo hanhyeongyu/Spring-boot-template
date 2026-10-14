@@ -51,6 +51,7 @@ internal class SecurityConfig{
             }
             authorizeHttpRequests {
                 authorize("/member/signup", permitAll)
+                authorize("/member/issue/info", authenticated)
                 authorize("/member/issue/**", permitAll)
                 authorize("/member/**", hasRole("MEMBER"))
 

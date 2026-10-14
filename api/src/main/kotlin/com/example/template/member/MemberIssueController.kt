@@ -5,16 +5,19 @@ import com.example.template.codable.PasswordEncodable
 import com.example.template.common.exception.BaseException
 import com.example.template.common.exception.EntityNotFoundException
 import com.example.template.common.exception.ErrorCode.INVALID_PASSWORD
+import com.example.template.jwt.AccessTokenInfo
 import com.example.template.jwt.IssueToken
 import com.example.template.jwt.JwtService
 import com.example.template.member.MemberIssueController.Companion.ENDPOINT
 import com.example.template.model.User
 import com.example.template.common.response.ApiResponse
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
 
 
 @RestController
@@ -41,6 +44,11 @@ class MemberIssueController(
     fun issue(@RequestBody request: MemberRequests.RefreshToken): ResponseEntity<ApiResponse<IssueToken>>{
         val token = jwtService.issueToken(request.refreshToken)
         return ResponseEntity.ok(ApiResponse.ok(token))
+    }
+
+    @GetMapping("/info")
+    fun info(principal: Principal): ResponseEntity<ApiResponse<AccessTokenInfo>> {
+        return ResponseEntity.ok(ApiResponse.ok(jwtService.accessTokenInfo(principal)))
     }
 
     private fun isMatch(
