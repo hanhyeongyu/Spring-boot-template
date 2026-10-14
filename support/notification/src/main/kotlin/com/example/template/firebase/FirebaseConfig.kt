@@ -3,12 +3,14 @@ package com.example.template.firebase
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.io.FileInputStream
 
 
 @Configuration
+@ConditionalOnProperty(name = ["support.notification.enabled"], havingValue = "true")
 class FirebaseConfig{
 
     @Bean
@@ -21,6 +23,6 @@ class FirebaseConfig{
     }
 
     companion object{
-        private const val FILE_LOCATION = "notification/src/main/resources/firebase-service-account.json"
+        private const val FILE_LOCATION = "support/notification/src/main/resources/firebase-service-account.json"
     }
 }

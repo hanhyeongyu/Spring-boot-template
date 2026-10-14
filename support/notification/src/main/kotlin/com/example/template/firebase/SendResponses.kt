@@ -3,7 +3,7 @@ package com.example.template.firebase
 import com.google.firebase.messaging.SendResponse
 
 
-fun SendResponse.invalidToken(): Boolean{
+internal fun SendResponse.invalidToken(): Boolean{
     if (this.isSuccessful){
         return false
     }

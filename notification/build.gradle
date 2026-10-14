@@ -2,7 +2,7 @@ dependencies{
     implementation(project(":platform"))
     implementation(project(":user"))
 
-    implementation("com.google.firebase:firebase-admin:${property("firebaseAdminVersion")}")
+    implementation(project(":support:notification"))
 
     compileOnly("org.springframework:spring-context")
     compileOnly("org.springframework:spring-tx")

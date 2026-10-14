@@ -4,7 +4,6 @@ package com.example.template.application
 import com.example.template.application.command.*
 import com.example.template.common.exception.EntityNotFoundException
 import com.example.template.firebase.Messaging
-import com.example.template.firebase.invalidToken
 import com.example.template.model.Token
 import com.example.template.model.TokenMonthExpireStrategy
 import com.example.template.model.Topic
@@ -30,10 +29,7 @@ class NotificationApplication(
     fun handle(command: SendNotificationToTopic){
         val topic = Topic(command.targetType, command.targetId)
 
-        val message = Messaging.commonMessageBuilder(command.title, command.body)
-            .setTopic(topic.value())
-            .build()
-        Messaging.send(message)
+        Messaging.sendToTopic(command.title, command.body, topic.value())
     }
 
     @Transactional
@@ -43,14 +39,10 @@ class NotificationApplication(
 
         val tokens = tokenService.tokens(user)
 
-        val message = Messaging.commonMulticastMessageBuilder(command.title, command.body)
-            .addAllTokens(tokens.map(Token::fcmToken))
-            .build()
-        val batchResult = Messaging.send(message)
+        val results = Messaging.sendToTokens(command.title, command.body, tokens.map(Token::fcmToken))
 
-
-        batchResult.responses.forEachIndexed { index, sendResponse ->
-            if(sendResponse.invalidToken()){
+        results.forEachIndexed { index, result ->
+            if(result.invalidToken){
                 val token = tokens[index]
                 tokenService.delete(token)
             }

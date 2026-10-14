@@ -13,6 +13,7 @@ include(
     "support:log",
     "support:storage",
     "support:file",
+    "support:notification",
 
     "user"
 )

@@ -3,14 +3,18 @@ package com.example.template.firebase
 import com.google.firebase.messaging.*
 
 
-internal object Messaging {
+object Messaging {
 
-    fun send(message: Message): String{
-        return FirebaseMessaging.getInstance().send(message)
+    fun sendToTopic(title: String, body: String, topic: String) {
+        val message = commonMessageBuilder(title, body).setTopic(topic).build()
+        FirebaseMessaging.getInstance().send(message)
     }
 
-    fun send(message: MulticastMessage): BatchResponse{
-        return FirebaseMessaging.getInstance().sendEachForMulticast(message)
+    fun sendToTokens(title: String, body: String, tokens: List<String>): List<TokenSendResult> {
+        val message = commonMulticastMessageBuilder(title, body).addAllTokens(tokens).build()
+        return FirebaseMessaging.getInstance().sendEachForMulticast(message).responses.map {
+            TokenSendResult(invalidToken = it.invalidToken())
+        }
     }
 
     /**
@@ -19,7 +23,7 @@ internal object Messaging {
      * @return apns config of an FCM request.
      */
 
-    fun apnsConfig(title: String, body: String): ApnsConfig {
+    private fun apnsConfig(title: String, body: String): ApnsConfig {
         val apsAlert = ApsAlert.builder()
             .setTitle(title)
             .setBody(body)
@@ -44,7 +48,7 @@ internal object Messaging {
      * @return android config of an FCM request.
      */
 
-    fun androidConfig(title: String, body: String): AndroidConfig {
+    private fun androidConfig(title: String, body: String): AndroidConfig {
         val androidNotification = AndroidNotification.builder()
             .setClickAction("android.intent.action.MAIN")
             .setTitle(title)
@@ -62,7 +66,7 @@ internal object Messaging {
      * Common
      */
 
-    fun commonMessageBuilder(title: String, body: String): Message.Builder{
+    private fun commonMessageBuilder(title: String, body: String): Message.Builder{
         val notification = Notification.builder()
             .setTitle(title)
             .setBody(body)
@@ -74,7 +78,7 @@ internal object Messaging {
             .setAndroidConfig(androidConfig(title, body))
     }
 
-    fun commonMulticastMessageBuilder(title: String, body: String): MulticastMessage.Builder{
+    private fun commonMulticastMessageBuilder(title: String, body: String): MulticastMessage.Builder{
         val notification = Notification.builder()
             .setTitle(title)
             .setBody(body)
