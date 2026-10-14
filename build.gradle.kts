@@ -37,10 +37,6 @@ subprojects{
         annotation("jakarta.persistence.Embeddable")
     }
 
-    tasks.withType<org.gradle.language.jvm.tasks.ProcessResources>().configureEach {
-        exclude("keys.yml", "**/*-keys.yml", "**/*-keys.yaml", "**/firebase-service-account.json")
-    }
-
     dependencies {
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
