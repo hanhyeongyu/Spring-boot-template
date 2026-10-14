@@ -42,3 +42,13 @@ out/
 
 ### API Keys ###
 firebase-service-account.json
+### Local settings ###
+keys.yml
+*-keys.yml
+*-keys.yaml
+.env
+.env.*
+!.env.example
+.local/
+logs/
+.DS_Store

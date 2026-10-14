@@ -1,13 +1,13 @@
 security:
   jwt:
-    secret: 35f5eebf-1ac7-4684-afc8-8ffd0b4b8606
+    secret: ${JWT_SECRET}
     issue: http://localhost:8080
     expiration:
       access: 30  #30m
       refresh: 10080 #7d
   password:
     encoder:
-      secret: ea413f43-16f2-421c-8cf2-45b598fc9634
+      secret: ${PASSWORD_ENCODER_SECRET}
 
 
 ---

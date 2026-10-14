@@ -2,7 +2,7 @@ spring:
   config:
     import:
       - redis.yml
-      - keys.yml
+      - optional:file:./support/storage/src/main/resources/database-keys.yml
 
 ---
 
