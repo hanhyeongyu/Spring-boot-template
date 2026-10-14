@@ -9,6 +9,7 @@ import com.example.template.jwt.IssueToken
 import com.example.template.jwt.JwtService
 import com.example.template.member.MemberIssueController.Companion.ENDPOINT
 import com.example.template.model.User
+import com.example.template.common.response.ApiResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -25,11 +26,11 @@ class MemberIssueController(
 ){
 
     @PostMapping()
-    fun issue(@RequestBody request: MemberRequests.IssueTokenRequest): ResponseEntity<IssueToken>{
+    fun issue(@RequestBody request: MemberRequests.IssueTokenRequest): ResponseEntity<ApiResponse<IssueToken>>{
         val member = userReadModel.user(request.email) ?: throw EntityNotFoundException()
         if (isMatch(request, member)){
             val token = jwtService.issueToken(member.id.toString(), listOf("MEMBER"))
-            return ResponseEntity.ok(token)
+            return ResponseEntity.ok(ApiResponse.ok(token))
         }else{
             throw BaseException(INVALID_PASSWORD)
         }
@@ -37,9 +38,9 @@ class MemberIssueController(
 
 
     @PostMapping("/refresh")
-    fun issue(@RequestBody request: MemberRequests.RefreshToken): ResponseEntity<IssueToken>{
+    fun issue(@RequestBody request: MemberRequests.RefreshToken): ResponseEntity<ApiResponse<IssueToken>>{
         val token = jwtService.issueToken(request.refreshToken)
-        return ResponseEntity.ok(token)
+        return ResponseEntity.ok(ApiResponse.ok(token))
     }
 
     private fun isMatch(

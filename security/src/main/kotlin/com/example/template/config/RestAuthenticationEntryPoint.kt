@@ -1,7 +1,7 @@
 package com.example.template.config
 
 import com.example.template.common.exception.ErrorCode.INVALID_ACCESS_TOKEN
-import com.example.template.common.response.ResponseException
+import com.example.template.common.response.ApiResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -65,16 +65,15 @@ class RestAuthenticationEntryPoint(
         response.addHeader(HttpHeaders.WWW_AUTHENTICATE, wwwAuthenticate)
         response.status = status.value()
         response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.status = HttpStatus.UNAUTHORIZED.value()
         response.characterEncoding = "UTF-8"
 
 
-        val responseException = ResponseException(INVALID_ACCESS_TOKEN)
+        val responseException = ApiResponse.error(status.value(), INVALID_ACCESS_TOKEN.errorCode, INVALID_ACCESS_TOKEN.errorMessage)
         val responseBody = objectMapper.writeValueAsString(responseException)
         response.writer?.write(responseBody)
 
-        log.error("Authentication Exception", authException)
-        log.error("Request Uri : {}", request?.requestURI)
+        log.debug("Authentication failed: {}", authException?.message)
+        log.debug("Request Uri: {}", request?.requestURI)
     }
 
     /**
@@ -103,5 +102,4 @@ class RestAuthenticationEntryPoint(
         }
         return wwwAuthenticate.toString()
     }
-
 }

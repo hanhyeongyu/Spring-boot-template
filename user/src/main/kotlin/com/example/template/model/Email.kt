@@ -1,11 +1,13 @@
 package com.example.template.model
 
+import com.example.template.common.exception.InvalidParamException
+
 @JvmInline
 value class Email(val value: String){
 
     init {
         if (!isValidEmail()){
-            throw IllegalArgumentException("Email is not valid")
+            throw InvalidParamException("Email is not valid")
         }
     }
 

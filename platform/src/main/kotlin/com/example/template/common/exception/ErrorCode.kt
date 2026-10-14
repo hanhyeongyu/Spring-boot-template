@@ -1,19 +1,22 @@
 package com.example.template.common.exception
 
-enum class ErrorCode(
-    val errorMessage: String,
-    val errorCode: Int
-) {
-    // Common
-    COMMON_SYSTEM_ERROR("일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.", -1),
-    COMMON_INVALID_PARAMETER("요청한 값이 올바르지 않습니다.", -2),
-    COMMON_ENTITY_NOT_FOUND("존재하지 않는 엔티티입니다.",-3),
-    COMMON_ILLEGAL_STATUS("잘못된 상태값입니다.", -4),
+import org.springframework.http.HttpStatus
 
-    // Security
-    TOKEN_NOT_FOUND("토큰이 필요합니다.",  -401),
-    INVALID_ACCESS_TOKEN("잘못된 엑세스 토큰입니다.",  -401),
-    INVALID_REFRESH_TOKEN("잘못된 리프레시 토큰입니다.",  -401),
-    ACCESS_DENIED("접근 권한이 없습니다.", -403),
-    INVALID_PASSWORD("잘못된 패스워드 입니다.",  -401),
+enum class ErrorCode(val errorCode: Int, val errorMessage: String, val httpStatus: HttpStatus) {
+    COMMON_SYSTEM_ERROR(5000, "A temporary error occurred. Please try again later.", HttpStatus.INTERNAL_SERVER_ERROR),
+    COMMON_INVALID_PARAMETER(4000, "The requested value is invalid.", HttpStatus.BAD_REQUEST),
+    COMMON_ILLEGAL_STATUS(4001, "Invalid status.", HttpStatus.BAD_REQUEST),
+    COMMON_ENTITY_NOT_FOUND(4040, "Entity not found.", HttpStatus.NOT_FOUND),
+    COMMON_METHOD_NOT_ALLOWED(4050, "Method not allowed.", HttpStatus.METHOD_NOT_ALLOWED),
+    COMMON_DUPLICATE_REQUEST(4090, "Duplicate request.", HttpStatus.CONFLICT),
+    COMMON_PAYLOAD_TOO_LARGE(4130, "Payload too large.", HttpStatus.PAYLOAD_TOO_LARGE),
+    COMMON_UNSUPPORTED_MEDIA_TYPE(4150, "Unsupported media type.", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
+    COMMON_SERVICE_UNAVAILABLE(5030, "Service unavailable.", HttpStatus.SERVICE_UNAVAILABLE),
+    TOKEN_NOT_FOUND(4010, "Token is required.", HttpStatus.UNAUTHORIZED),
+    EXPIRED_ACCESS_TOKEN(4011, "Access token expired.", HttpStatus.UNAUTHORIZED),
+    EXPIRED_REFRESH_TOKEN(4012, "Refresh token expired.", HttpStatus.UNAUTHORIZED),
+    INVALID_ACCESS_TOKEN(4013, "Invalid access token.", HttpStatus.UNAUTHORIZED),
+    INVALID_REFRESH_TOKEN(4014, "Invalid refresh token.", HttpStatus.UNAUTHORIZED),
+    INVALID_PASSWORD(4015, "Invalid credentials.", HttpStatus.UNAUTHORIZED),
+    ACCESS_DENIED(4030, "Access denied.", HttpStatus.FORBIDDEN),
 }
