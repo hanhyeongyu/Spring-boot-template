@@ -4,6 +4,7 @@ import com.example.template.model.DownloadUrl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
+import org.springframework.http.ContentDisposition
 import org.springframework.core.io.InputStreamResource
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -20,6 +21,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest
 import java.nio.file.Path
 import java.net.URI
+import java.nio.charset.StandardCharsets
 import java.time.Duration
 
 @Service
@@ -120,7 +122,10 @@ class S3FileConnector(
             .bucket(bucket)
             .key(key)
         if (isAttachment) {
-            getObjectRequestBuilder.responseContentDisposition("attachment; filename=\"${path.fileName}\"")
+            val contentDisposition = ContentDisposition.attachment()
+                .filename(path.fileName.toString(), StandardCharsets.UTF_8)
+                .build()
+            getObjectRequestBuilder.responseContentDisposition(contentDisposition.toString())
         }
 
         val presignRequest = GetObjectPresignRequest.builder()
