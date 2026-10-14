@@ -16,7 +16,7 @@ java {
 }
 
 allprojects{
-    group = "${property("kotlinVersion")}"
+    group = "${property("projectGroup")}"
     version = "${property("applicationVersion")}"
 
     repositories {
@@ -30,6 +30,16 @@ subprojects{
     apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
+
+    extensions.configure<org.jetbrains.kotlin.allopen.gradle.AllOpenExtension> {
+        annotation("jakarta.persistence.Entity")
+        annotation("jakarta.persistence.MappedSuperclass")
+        annotation("jakarta.persistence.Embeddable")
+    }
+
+    tasks.withType<org.gradle.language.jvm.tasks.ProcessResources>().configureEach {
+        exclude("keys.yml", "**/*-keys.yml", "**/*-keys.yaml", "**/firebase-service-account.json")
+    }
 
     dependencies {
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
