@@ -16,7 +16,7 @@ internal class PasswordConfiguration {
         return Pbkdf2PasswordEncoder(
             passwordEncoderSecret,
             128,
-            100,
+            310_000,
             Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
         )
     }
