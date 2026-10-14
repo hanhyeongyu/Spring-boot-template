@@ -85,19 +85,4 @@ internal class SecurityConfig{
         }
     }
 
-    @Bean
-    fun passwordEncoder(
-        @Value("\${security.password.encoder.secret}")
-        passwordEncoderSecret: String
-    ): PasswordEncoder {
-        return Pbkdf2PasswordEncoder(
-            passwordEncoderSecret,
-            128,
-            100,
-            Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
-        )
-    }
-
-
-
 }
