@@ -22,6 +22,11 @@ server:
       max: 600
       min-spare: 100
 
+management:
+  health:
+    mail:
+      enabled: false
+
 ---
 spring.config.activate.on-profile: local
 
